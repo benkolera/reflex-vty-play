@@ -51,7 +51,7 @@ data Res = Res
 deriveFromJSON (defaultOptions { fieldLabelModifier = drop 1 }) ''Res
 
 url :: String
-url = "http://tracking.linexsolutions.com/Shipment/GetTrackingLIst"
+url = "http://tracking.linexsolutions.com/Shipment/GetTrackingList"
 
 getStatus :: (Either String [Res] -> IO ()) -> IO ()
 getStatus cb = do
@@ -70,7 +70,7 @@ main = mainWidget $ do
   inp <- input
   ePb <- getPostBuild
   ePostBuildTime <- performEvent $ liftIO getCurrentTime <$ ePb
-  eTick <- tickLossyFrom' $ (10,) <$> ePostBuildTime
+  eTick <- tickLossyFrom' $ (60,) <$> ePostBuildTime
 
   eRes <- performEventAsync $ (liftIO . getStatus) <$ (ePb <> void eTick)
 
@@ -100,7 +100,7 @@ main = mainWidget $ do
     fixed 1 $ row $ do
       stretch $ text "Still in Memphis..."
       fixed 14 $ text "Last Checked: "
-      fixed 34 $ text $ maybe "" tshow <$> bLastUpdated
+      fixed 33 $ text $ maybe "" tshow <$> bLastUpdated
 
   pure $ fforMaybe inp $ \case
     V.EvKey (V.KChar 'c') [V.MCtrl] -> Just ()
