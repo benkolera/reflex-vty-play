@@ -13,34 +13,26 @@
 {-# LANGUAGE TupleSections #-}
 {-# OPTIONS_GHC -threaded #-}
 
-import Control.Applicative
-import Control.Monad
+import Reflex
+import Control.Lens
+import Reflex.Vty
+
 import Control.Monad.Trans (lift)
 import Control.Monad.IO.Class (liftIO)
-import Control.Monad.Fix
-import Control.Monad.NodeId
-import Data.Functor.Misc
+import Data.Aeson (toJSON, eitherDecode)
+import Data.Aeson.TH (deriveFromJSON, deriveToJSON, defaultOptions, fieldLabelModifier)
+import Data.Bifunctor (first)
+import Data.Functor (void)
 import Data.Map (Map)
-import Data.Maybe
 import qualified Data.Map as Map
-import Data.List
+import Data.List (drop)
 import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.Lazy as TL
 import qualified Data.Text.Lazy.Encoding as TL
-import qualified Data.Text.Zipper as TZ
+import Data.Time (getCurrentTime)
 import qualified Graphics.Vty as V
-import Reflex
-import Reflex.Network
-import Reflex.Class.Switchable
-import Reflex.Vty
-import Data.Bifunctor (first)
-import Control.Lens
-import Data.Aeson
-import Data.Aeson.TH
-import Data.Default
-import Network.Wreq
-import Data.Time
+import Network.Wreq (postWith, defaults, header, responseBody)
 
 tshow :: Show a => a -> T.Text
 tshow = T.pack . show
