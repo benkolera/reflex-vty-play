@@ -83,7 +83,7 @@ main = mainWidget $ do
   eRes <- performEventAsync $ (liftIO . getStatus) <$ (ePb <> void eTick)
 
   let eErr = fmapMaybe (^?_Left) eRes
-  let eOk = fmapMaybe (^?_Right.to (zip [1..]).to Map.fromList) eRes
+  let eOk = fmapMaybe (^?_Right.to (Map.fromList . fmap (\r -> (_event_date_time r <> _Description r, r)))) eRes
   bLastUpdated <- hold Nothing (Just <$> (leftmost [ePostBuildTime,_tickInfo_lastUTC <$> eTick]))
 
   dOk <- holdDyn Map.empty eOk
